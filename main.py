@@ -2,6 +2,12 @@ import random
 import os
 import time
 import os
+import requests
+import pprint
+import socket
+from email.message import EmailMessage
+import smtplib
+
 import pyfiglet as pf
 
 def RegisterData():
@@ -58,19 +64,47 @@ def PasswordGenerator():
     elif length:
         print("must be a number")
         
-def IPCheck():
-    a = 1
+def IPInfo():
+    ip = input("Masukan Alamat IP : ")
+    dns = socket.gethostbyname(ip)
+    url = f"https://ipapi.co/"+format(dns)+"/json/"
+    r = requests.get(url)
+    pprint.pprint(r.json())
+        
+    enter = input("\nPress ENTER to continue ...")
+    if enter:
+        os.system('cls')
+        MenuUI()
+    else:
+        os.system('cls')
+        MenuUI()
+
+def SendMail():
+    sender_email = input("Masukan Email Kamu : ")
+    rec_email = input("Masukan Email Tujuan : ")
+    password = input(str("Masukan Password Email Kamu : "))
+    message = input("Isi Pesan : ")
     
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.ehlo()
+    server.login(sender_email, password)
+    print('Login succes')
+    server.sendmail(sender_email, rec_email, message)
+    print("Email has been sent to ", rec_email)
 def MenuUI():
-    print(pf.figlet_format("Power Tools", font="bulbhead"))
-    print("    Github : github.com/MuhammadDaffaTFA\n    Instagram : @mdafftfa\n\nChoose, what do you want to do in below: \n1) Random Password Generator \n2) Coming soon\n")
+    print(pf.figlet_format("Simple Tools", font="bulbhead"))
+    print("    Github : github.com/MuhammadDaffaTFA\n    Instagram : @mdafftfa\n\nChoose, what do you want to do in below: \n1) Random Password Generator \n2) IP Location\n3) Email System (Beta Release)\n")
     option = int(input("Select Options: "))
     
     if type(option) == int:
         if option == 1:
             PasswordGenerator()
         elif option == 2:
-            IPCheck()
+            IPInfo()
+        elif option == 3:
+            SendMail()
         elif option == 0:
             Update()
         else:
